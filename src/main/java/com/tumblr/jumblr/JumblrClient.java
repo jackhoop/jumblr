@@ -191,6 +191,27 @@ public class JumblrClient {
         return requestBuilder.get(JumblrClient.blogPath(blogName, path), soptions).getPosts();
     }
 
+    /**
+     * Get the posts for a given blog
+     * @param blogName the name of the blog
+     * @param options the options for this call (or null)
+     * @return map
+     */
+    public Map<String, Object> blogMapPosts(String blogName, Map<String, ?> options) {
+        if (options == null) {
+            options = Collections.emptyMap();
+        }
+        Map<String, Object> soptions = JumblrClient.safeOptionMap(options);
+        soptions.put("api_key", apiKey);
+
+        String path = "/posts";
+        if (soptions.containsKey("type")) {
+            path += "/" + soptions.get("type").toString();
+            soptions.remove("type");
+        }
+        return requestBuilder.get(JumblrClient.blogPath(blogName, path), soptions).getMapPosts();
+    }
+
     public List<Post> blogPosts(String blogName) {
         return this.blogPosts(blogName, null);
     }

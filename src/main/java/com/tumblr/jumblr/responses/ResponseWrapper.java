@@ -10,7 +10,10 @@ import com.tumblr.jumblr.types.Blog;
 import com.tumblr.jumblr.types.Post;
 import com.tumblr.jumblr.types.Resource;
 import com.tumblr.jumblr.types.User;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ResponseWrapper {
 
@@ -45,6 +48,20 @@ public class ResponseWrapper {
         List<Post> l = gson.fromJson(object.get("posts"), new TypeToken<List<Post>>() {}.getType());
         for (Post e : l) { e.setClient(client); }
         return l;
+    }
+
+    // NOTE: needs to be duplicated logic due to Java erasure of generic types
+    public Map<String,Object> getMapPosts() {
+        Gson gson = gsonParser();
+        JsonObject object = (JsonObject) response;
+        List<Post> l = gson.fromJson(object.get("posts"), new TypeToken<List<Post>>() {}.getType());
+        for (Post e : l) { e.setClient(client); }
+
+        Integer totalPosts = object.get("total_posts").getAsInt();
+
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("posts",l);
+        return map;
     }
 
     // NOTE: needs to be duplicated logic due to Java erasure of generic types
